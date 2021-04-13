@@ -2,12 +2,7 @@
 echo "Starting provisioning of Ansible..."
 
 sudo apt-get update
-sudo apt-get install git -y
-sudo apt-get install python-setuptools -y
-sudo apt-get install python-dev -y
-sudo easy_install pip
-sudo apt-get install software-properties-common -y
-sudo apt-add-repository ppa:ansible/ansible -y
-sudo apt-get update -y
-sudo apt-get install ansible -y
-
+sudo apt full-upgrade -y
+sudo apt autoremove -y
+sudo apt-add-repository -y ppa:ansible/ansible
+sudo apt install -y ansible=2.9.6+dfsg-1 software-properties-common python3-setuptools python3-dev git python3-pip
