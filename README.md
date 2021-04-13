@@ -1,4 +1,4 @@
-# Overview
+# Vagrant Ansible Lab
 
 This lab is based on the Udemy course https://www.udemy.com/mastering-ansible/
 The lab has been built with Virtualbox VM host, and may not work with other VM providers without modification.
@@ -48,7 +48,7 @@ The lab will implement the following configuration:
   * ./playbooks/roles/nginx/tasks/main.yml task step definitions
   * ./playbooks/roles/nginx/templates/nginx.conf.j2 config file template, used in the "configure nginx site" step in tasks/main.yml, using the "template:" module to customize the .j2 file template into nginx.conf
 
-### Ansible syntax samples 
+## Ansible syntax samples 
 
 ##Selecting and filtering hosts to work with
 
@@ -93,7 +93,7 @@ ansible-playbook playbooks/site.yml --list-hosts
 ansible-playbook playbooks/site.yml --list-tags
 
 
-### Using sample playbooks
+## Sample Usages
 
 Simple playbook that executes "hostname" command:
 ```shell
