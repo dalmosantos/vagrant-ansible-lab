@@ -48,89 +48,106 @@ The lab will implement the following configuration:
   * ./playbooks/roles/nginx/tasks/main.yml task step definitions
   * ./playbooks/roles/nginx/templates/nginx.conf.j2 config file template, used in the "configure nginx site" step in tasks/main.yml, using the "template:" module to customize the .j2 file template into nginx.conf
 
-## Ansible syntax samples 
+## Examples
 
-##Selecting and filtering hosts to work with
+### Working With Inventory
 
-#####selecting hosts
-ansible --list-hosts all
-ansible --list-hosts "*"
+List all hosts:
+```
+$ ansible --list-hosts all
+$ ansible --list-hosts "*"
+```
 
-####name of group in hosts file
-ansible --list-hosts loadbalancer
+List hosts from specific group:
+```
+$ ansible --list-hosts loadbalancer
+```
 
-####wildcard filter
-ansible --list-hosts "app*"
+List hosts using wildcard filter
+```
+$ ansible --list-hosts "app*"
+```
 
-####multiple groups separated by a colon (deprecated)
-ansible --list-hosts database:control
+List hosts from multiple groups
+```
+$ ansible --list-hosts database,control
+```
 
-####multiple groups separated by a comma
-ansible --list-hosts database,control
+List first node in webserver group:
+```
+$ ansible --list-hosts webserver[0]
+```
 
-####select first node in webserver group
-ansible --list-hosts webserver[0]
+List hosts not in control group:
+```
+$ ansible --list-hosts \!control
+```
 
-####everything not in control group, bang escaped in bash
-ansible --list-hosts \!control
+### Adhoc Command Examples
 
+Ping all of the hosts:
+```
+$ ansible -m ping all
+```
 
-##simple commands
+Run `hostname` command on target hosts:
+```
+$ ansible -m command -a "hostname" all
+```
 
-####internal ping module
-ansible -m ping all
+Run `hostname` command on target hosts(here we are not passing module, `command` module is the default one):
+```
+$ ansible -a "hostname" all
+```
 
-####command module (-m) executing "hostname" command (-a)
-ansible -m command -a "hostname" all
-
-####command with just -a is equiv, as command module is default module
-ansible -a "hostname" all
-
-####show what hosts are involved in this playbook
-ansible-playbook playbooks/site.yml --list-hosts
-
-####show what tags are involved in this playbook
-ansible-playbook playbooks/site.yml --list-tags
-
-
-## Sample Usages
+### Playbook Examples
 
 Simple playbook that executes "hostname" command:
 ```shell
 $ ansible-playbook -i /vagrant/ansible/hosts /vagrant/ansible/playbooks/hostname.yml
 ```
 
-Run only steps in a playbook that have a tag called "packages" defined
+Show what hosts are involved in this playbook:
+```
+$ ansible-playbook -i /vagrant/ansible/hosts /vagrant/ansible/playbooks/hostname.yml --list-hosts
+```
+
+Show what tags are involved in this playbook:
+```
+$ ansible-playbook -i /vagrant/ansible/hosts /vagrant/ansible/playbooks/hostname.yml --list-tags
+```
+
+Run only steps in a playbook that have a tag called "packages" defined:
 ```shell
 $ ansible-playbook -i /vagrant/ansible/hosts /vagrant/ansible/playbooks/site.yml --tags "packages"
 ```
 
-Run only steps in a playbook that DON'T have a tag called "packages" defined
+Run only steps in a playbook that DON'T have a tag called "packages" defined:
 ```
 $ ansible-playbook -i /vagrant/ansible/hosts /vagrant/ansible/playbooks/site.yml --skip-tags "packages"
 ```
 
-Step through tasks and be prompted whether to run each step or not
+Step through tasks and be prompted whether to run each step or not:
 ```
 $ ansible-playbook -i /vagrant/ansible/hosts /vagrant/ansible/playbooks/site.yml --step
 ```
 
-Show all tasks that will be executed by the playbook
+Show all tasks that will be executed by the playbook:
 ```
 $ ansible-playbook -i /vagrant/ansible/hosts /vagrant/ansible/playbooks/site.yml --list-tasks
 ```
 
-Skip over steps in a playbook and start at a specific task
+Skip over steps in a playbook and start at a specific task:
 ```
 $ ansible-playbook -i /vagrant/ansible/hosts /vagrant/ansible/playbooks/stack_status.yml --start-at-task "verify end-to-end response"
 ```
 
-Verify syntax
+Verify syntax:
 ```
 $ ansible-playbook --syntax-check /vagrant/ansible/playbooks/site.yml
 ```
 
-Do a simulated run of the playbook
+Do a simulated run of the playbook:
 ```
 $ ansible-playbook --check -i /vagrant/ansible/hosts /vagrant/ansible/playbooks/site.yml
 ```
