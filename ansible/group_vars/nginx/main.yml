@@ -9,3 +9,4 @@ nginx_vhosts:
   - server_name: "prometheus.example.com"
     template: "templates/prometheus.example.com.vhost.j2"
     filename: "prometheus.example.com.conf"
+gzip_enabled: false
