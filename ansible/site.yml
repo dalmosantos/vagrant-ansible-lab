@@ -6,9 +6,14 @@
     - name: Gather facts
       setup:
 
-
-- name: Import prometheus.yml
+- name: Import prometheus.yml conditionally
   import_playbook: playbooks/prometheus.yml
   when: 
     - ansible_facts['os_family'] | lower == "redhat"
     - ansible_facts['distribution'] | lower == "centos"
+
+- name: Import nginx.yml conditionally
+  import_playbook: playbooks/nginx.yml
+  when: 
+    - ansible_facts['os_family'] | lower == "debian"
+    - ansible_facts['distribution'] | lower == "ubuntu"

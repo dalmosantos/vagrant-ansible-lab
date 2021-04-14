@@ -15,7 +15,7 @@ Vagrant.configure(2) do |config|
     h.vm.box = "ubuntu/focal64"
     h.vm.hostname =  "control"
     h.vm.network "private_network", ip: "192.168.135.10"
-    h.vm.provision :shell, inline: 'sudo ln -s /usr/bin/python3 /usr/bin/python'
+    h.vm.network "forwarded_port", guest: 22, host: "2200", id: "ssh"
     h.vm.provision "shell" do |provision|
       provision.path = "provision_ansible.sh"
     end 
@@ -40,7 +40,7 @@ EOF
     h.vm.box = "ubuntu/focal64"
     h.vm.hostname = "app01"
     h.vm.network "private_network", ip: "192.168.135.111"
-    h.vm.provision :shell, inline: 'sudo ln -s /usr/bin/python3 /usr/bin/python'
+    h.vm.network "forwarded_port", guest: 22, host: "2201", id: "ssh"
     h.vm.provision :shell, inline: 'cat /vagrant/control.pub >> /home/vagrant/.ssh/authorized_keys'
   end
 
@@ -48,7 +48,7 @@ EOF
     h.vm.box = "centos/7"
     h.vm.hostname = "app02"
     h.vm.network "private_network", ip: "192.168.135.112"
-    h.vm.provision :shell, inline: 'sudo ln -s /usr/bin/python3 /usr/bin/python'
+    h.vm.network "forwarded_port", guest: 22, host: "2202", id: "ssh"
     h.vm.provision :shell, inline: 'cat /vagrant/control.pub >> /home/vagrant/.ssh/authorized_keys'
     h.vm.provision :shell, inline: 'test -e /usr/bin/python3 || (yum install -y python3)'
   end

@@ -1,0 +1,9 @@
+---
+
+prometheus_components:
+  - prometheus
+  - alertmanager
+  - node_exporter
+prometheus_port: 9090
+prometheus_extra_opts:
+  - '--storage.tsdb.retention=40d'

@@ -1,0 +1,27 @@
+upstream prometheus {
+{% for item in groups['prometheus'] %}
+{% if (hostvars[item]['ansible_os_family'] | lower) == "debian" %}
+    server {{ hostvars[item]['ansible_enp0s8']['ipv4']['address'] }}:{{ prometheus_port }} max_fails=3 fail_timeout=30s;
+{% elif (hostvars[item]['ansible_os_family'] | lower) == "redhat" %}
+    server {{ hostvars[item]['ansible_eth1']['ipv4']['address'] }}:{{ prometheus_port }} max_fails=3 fail_timeout=30s;
+{% endif %}
+{% endfor %}
+}
+
+server {
+        listen 80 default_server;
+        server_name prometheus.example.com;
+        # gzip on;
+        # gzip_vary on;
+        # gzip_min_length 10240;
+        # gzip_proxied any;
+        # gzip_types text/plain text/css text/xml text/javascript application/x-javascript application/xml;
+        # gzip_disable "MSIE [1-6]\.";
+        location / {
+                proxy_pass http://prometheus;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+        }
+}

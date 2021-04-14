@@ -2,15 +2,6 @@
 
 - name: Install Prometheus
   hosts: prometheus
-  roles:
-    - role: mesaguy.prometheus
-  vars:
-    prometheus_components:
-      - prometheus
-      - alertmanager
-      - node_exporter
-    prometheus_port: 9090
-    prometheus_extra_opts:
-     - '--storage.tsdb.retention=40d'
+  become: true
   roles:
     - mesaguy.prometheus
