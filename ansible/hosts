@@ -1,5 +1,7 @@
-[webserver]
+[nginx]
 app01 ansible_host=192.168.135.111
+
+[prometheus]
 app02 ansible_host=192.168.135.112
 
 [control]
