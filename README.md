@@ -27,7 +27,7 @@ The lab will implement the following configuration:
 * Clone this repo
 * Ensure you have installed Vagrant and Virtualbox(check `Prerequisites` section)
 * Run `vagrant up` from the root of the cloned repo (the folder with Vagrantfile in it)
-* Once the VMs are built, type `vagrant ssh control` to logon to the ansible controller from within your vagrant project folder
+* Once the VMs are built, type `vagrant ssh control` to login to the ansible controller from within your vagrant project folder.
 * Change directories `cd /vagrant/ansible` which is the ansible subfolder of your vagrant project for this lab (the vagrant project folder is mounted within the VMs as /vagrant during provisioning)
 
 ## Important Files

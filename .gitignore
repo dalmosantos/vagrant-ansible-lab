@@ -1,4 +1,2 @@
 control.pub
-.vagrant/machines
 .vagrant
-*retry
