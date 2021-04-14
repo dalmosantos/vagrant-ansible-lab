@@ -17,6 +17,11 @@ The lab will implement the following configuration:
 ## Prerequisites
 * Install the Vagrant 2.2.15 from https://www.vagrantup.com/downloads
 * Install the Virtualbox 6.1.18 from https://www.virtualbox.org/wiki/Downloads if it is not installed already.
+* Download the Vagrant boxes for your preferred hypervisor:
+  ```
+  $ vagrant box add centos/7
+  $ vagrant box add ubuntu/focal64
+  ```
 
 ## Quick Start
 * Clone this repo
