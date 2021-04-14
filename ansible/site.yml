@@ -1,0 +1,14 @@
+---
+
+- name: Main play
+  hosts: all
+  tasks:
+    - name: Gather facts
+      setup:
+
+
+- name: Import prometheus.yml
+  import_playbook: playbooks/prometheus.yml
+  when: 
+    - ansible_facts['os_family'] | lower == "redhat"
+    - ansible_facts['distribution'] | lower == "centos"

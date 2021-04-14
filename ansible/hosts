@@ -6,3 +6,6 @@ app02 ansible_host=192.168.135.112
 
 [control]
 control ansible_connection=local
+
+[prometheus:vars]
+ansible_python_interpreter=/usr/bin/python

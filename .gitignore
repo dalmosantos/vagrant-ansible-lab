@@ -1,2 +1,4 @@
 control.pub
 .vagrant
+ansible/playbooks/roles/
+ansible/roles/
