@@ -10,3 +10,4 @@ sudo apt-get install -y ansible=2.9.6+dfsg-1 \
     && python3-dev \
     && git \
     && python3-pip
+pip3 install "yamllint==1.25.0" "ansible-lint==4.3.7"
