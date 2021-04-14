@@ -37,7 +37,6 @@ The lab will implement the following configuration:
   - `ansible.cfg` (in the current directory)
   - `~/.ansible.cfg` (in the home directory)
   - `/etc/ansible/ansible.cfg`
-
 * [./group_vars/all/vars](ansible/group_vars/all/main.yml): Global variables file for all of the host groups
 
 ## Examples
