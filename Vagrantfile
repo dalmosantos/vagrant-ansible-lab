@@ -48,7 +48,6 @@ EOF
     h.vm.box = "centos/7"
     h.vm.hostname = "app02"
     h.vm.network "private_network", ip: "192.168.135.112"
-    h.vm.provision :shell, inline: 'sudo ln -s /usr/bin/python3 /usr/bin/python'
     h.vm.provision :shell, inline: 'cat /vagrant/control.pub >> /home/vagrant/.ssh/authorized_keys'
     h.vm.provision :shell, inline: 'test -e /usr/bin/python3 || (yum install -y python3)'
   end
