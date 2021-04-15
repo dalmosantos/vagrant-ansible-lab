@@ -16,6 +16,7 @@ Vagrant.configure(2) do |config|
     h.vm.hostname =  "control"
     h.vm.network "private_network", ip: "192.168.135.10"
     h.vm.network "forwarded_port", guest: 22, host: "2200", id: "ssh"
+    h.vm.provision :shell, inline: "echo 'export ANSIBLE_CONFIG=/vagrant/ansible/ansible.cfg' >> /home/vagrant/.bash_profile"
     h.vm.provision "shell" do |provision|
       provision.path = "provision_ansible.sh"
     end 
