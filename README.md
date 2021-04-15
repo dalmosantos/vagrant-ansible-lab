@@ -1,4 +1,4 @@
-# Overview
+# Vagrant Ansible Lab
 
 This lab is based on the Udemy course https://www.udemy.com/mastering-ansible/
 The lab has been built with Virtualbox VM host, and may not work with other VM providers without modification.
@@ -9,119 +9,136 @@ The lab will implement the following configuration:
 -
 | Machine  Name | Role          | Network Configuration                  | OS                         |
 |---------------|---------------|----------------------------------------|----------------------------|
-| control       | Ansible  host | private_network, ip: 192.168.135.10    | Ubuntu Trusty64 (14 LTS)   |
-| lb01          | Load Balancer | private_network, ip: 192.168.135.101   | Ubuntu Trusty64 (14 LTS)   |
-| app01         | web server 1  | private_network, ip: 192.168.135.111   | Ubuntu Trusty64 (14 LTS)   |
-| app02         | web server 2  | private_network, ip: 192.168.135.112   | Ubuntu Trusty64 (14 LTS)   |
-| db01          | mysql db      | private_network, ip: 192.168.135.121   | Ubuntu Trusty64 (14 LTS)   |
+| control       | Ansible  host | private_network, ip: 192.168.135.10    | Ubuntu Focal64 (20 LTS)   |
+| app01         | web server 1  | private_network, ip: 192.168.135.111   | Ubuntu Focal64 (20 LTS)   |
+| app02         | web server 2  | private_network, ip: 192.168.135.112   | Centos 7   |
 
-# Quick Start
 
+## Prerequisites
+* Install the Vagrant 2.2.15 from https://www.vagrantup.com/downloads
+* Install the Virtualbox 6.1.18 from https://www.virtualbox.org/wiki/Downloads if it is not installed already.
+* Download the Vagrant boxes for your preferred hypervisor:
+  ```
+  $ vagrant box add centos/7
+  $ vagrant box add ubuntu/focal64
+  ```
+
+## Quick Start
 * Clone this repo
-* Install the hostmanager Vagrant plugin if ytou haven't already `vagrant plugin install vagrant-hostmanager`
-  * on a Mac Vagrant host, `brew install libffi` was required prior to installing the plugin successfully
-* run `vagrant up` from the root of the synced repo (the folder with Vagrantfile in it)
-* Once the VMs are built, type `vagrant ssh control` to logon to the ansible controller from within your vagrant project folder
+* Ensure you have installed Vagrant and Virtualbox(check `Prerequisites` section)
+* Run `vagrant up` from the root of the cloned repo (the folder with Vagrantfile in it)
+* Once the VMs are built, type `vagrant ssh control` to login to the ansible controller from within your vagrant project folder.
 * Change directories `cd /vagrant/ansible` which is the ansible subfolder of your vagrant project for this lab (the vagrant project folder is mounted within the VMs as /vagrant during provisioning)
-* run `ansible-playbook playbooks/site.yml` to build the entire 3 tier configuration (load balancer, sample web app, and database connection)
-* run `ansible-playbook playbooks/stack_status.yml` to validate status of each component
-* test that the application stack is working properly end to end by running `curl http://lb01/db`
 
+## Important Files
+* [./hosts](ansible/hosts): File defining the servers to be managed
+* [./ansible.cfg](ansible/ansible.cfg): Ansible supports several sources for configuring its behavior, including an ini file named [ansible.cfg](ansible.cfg), environment variables, command-line options, playbook keywords, and variables. Changes can be made and used in a configuration file which will be searched for in the following order(Ansible will process the below list and use the first file found, all others are ignored.):
+  - `ANSIBLE_CONFIG` (environment variable if set)
+  - `ansible.cfg` (in the current directory)
+  - `~/.ansible.cfg` (in the home directory)
+  - `/etc/ansible/ansible.cfg`
+* [./group_vars/all/vars](ansible/group_vars/all/main.yml): Global variables file for all of the host groups
 
-#Exploring the details
-* ./hosts
-  * file defining the servers to be orchestrated
-* ./ansible.cfg
-  * defines hosts file location and ansible vault password file location
-* ./group_vars/all/vars
-  * global variables file, includes database name and login user info
-* ./group_vars/all/vault
-  * file encrypted containing database user password (vault_db_pass) 
-  * you can view and edit the file with `ansible-vault edit group_vars/all/vault` - your decryption key specified in ansible.cfg will be used to decrypt and reencrypt the file transparently
-* ./site.yml - main playbook wrapper, which includes playbooks for the various server types, such as loadbalancer.yml, for building the front end load balancer
-*  ./loadbalancer.yml
-  *  defines affected hosts ("loadbalancer", which in turn is a group defined in ./hosts file)
-  *  references the role of type nginx, which means to include running the playbook in playbooks/roles/tasks/main.yml
-  * (same idea for database.yml, control.yml, webserver.yml)
-* ./playbooks/roles/nginx (same concept for each role in playbooks/roles/*)
-  * ./playbooks/roles/nginx/defaults/main.yml variable defaults
-  * ./playbooks/roles/nginx/vars/main.yml variables, if defined here would override the ones in defaults folder
-  * ./playbooks/roles/nginx/handlers/main.yml handler definitions for "notify" actions in tasks
-  * ./playbooks/roles/nginx/tasks/main.yml task step definitions
-  * ./playbooks/roles/nginx/templates/nginx.conf.j2 config file template, used in the "configure nginx site" step in tasks/main.yml, using the "template:" module to customize the .j2 file template into nginx.conf
+## Examples
 
-# Ansible syntax samples 
+### Working With Inventory
 
-##Selecting and filtering hosts to work with
+List all hosts:
+```
+$ ansible --list-hosts all
+$ ansible --list-hosts "*"
+```
 
-#####selecting hosts
-ansible --list-hosts all
-ansible --list-hosts "*"
+List hosts from specific group:
+```
+$ ansible --list-hosts loadbalancer
+```
 
-####name of group in hosts file
-ansible --list-hosts loadbalancer
+List hosts using wildcard filter
+```
+$ ansible --list-hosts "app*"
+```
 
-####wildcard filter
-ansible --list-hosts "app*"
+List hosts from multiple groups
+```
+$ ansible --list-hosts database,control
+```
 
-####multiple groups separated by a colon (deprecated)
-ansible --list-hosts database:control
+List first node in webserver group:
+```
+$ ansible --list-hosts webserver[0]
+```
 
-####multiple groups separated by a comma
-ansible --list-hosts database,control
+List hosts not in control group:
+```
+$ ansible --list-hosts \!control
+```
 
-####select first node in webserver group
-ansible --list-hosts webserver[0]
+### Adhoc Command Examples
 
-####everything not in control group, bang escaped in bash
-ansible --list-hosts \!control
+Ping all of the hosts:
+```
+$ ansible -m ping all
+```
 
+Run `hostname` command on target hosts:
+```
+$ ansible -m command -a "hostname" all
+```
 
-##simple commands
+Run `hostname` command on target hosts(here we are not passing module, `command` module is the default one):
+```
+$ ansible -a "hostname" all
+```
 
-####internal ping module
-ansible -m ping all
+### Playbook Examples
 
-####command module (-m) executing "hostname" command (-a)
-ansible -m command -a "hostname" all
+Simple playbook that executes "hostname" command:
+```shell
+$ ansible-playbook -i /vagrant/ansible/hosts /vagrant/ansible/playbooks/hostname.yml
+```
 
-####command with just -a is equiv, as command module is default module
-ansible -a "hostname" all
+Show what hosts are involved in this playbook:
+```
+$ ansible-playbook -i /vagrant/ansible/hosts /vagrant/ansible/playbooks/hostname.yml --list-hosts
+```
 
-####show what hosts are involved in this playbook
-ansible-playbook playbooks/site.yml --list-hosts
+Show what tags are involved in this playbook:
+```
+$ ansible-playbook -i /vagrant/ansible/hosts /vagrant/ansible/playbooks/hostname.yml --list-tags
+```
 
-####show what tags are involved in this playbook
-ansible-playbook playbooks/site.yml --list-tags
+Run only steps in a playbook that have a tag called "packages" defined:
+```shell
+$ ansible-playbook -i /vagrant/ansible/hosts /vagrant/ansible/playbooks/site.yml --tags "packages"
+```
 
+Run only steps in a playbook that DON'T have a tag called "packages" defined:
+```
+$ ansible-playbook -i /vagrant/ansible/hosts /vagrant/ansible/playbooks/site.yml --skip-tags "packages"
+```
 
-## using playbooks
+Step through tasks and be prompted whether to run each step or not:
+```
+$ ansible-playbook -i /vagrant/ansible/hosts /vagrant/ansible/playbooks/site.yml --step
+```
 
-####simple playbook that executes "hostame" command
-ansible-playbook /vagrant/playbooks/hostname.yml
+Show all tasks that will be executed by the playbook:
+```
+$ ansible-playbook -i /vagrant/ansible/hosts /vagrant/ansible/playbooks/site.yml --list-tasks
+```
 
-####run only steps in a playbook that have a tag called "packages" defined
-ansible-playbook playbooks/site.yml --tags "packages"
+Skip over steps in a playbook and start at a specific task:
+```
+$ ansible-playbook -i /vagrant/ansible/hosts /vagrant/ansible/playbooks/stack_status.yml --start-at-task "verify end-to-end response"
+```
 
-####run only steps in a playbook that DON'T have a tag called "packages" defined
-ansible-playbook playbooks/site.yml --skip-tags "packages"
+Verify syntax:
+```
+$ ansible-playbook --syntax-check /vagrant/ansible/playbooks/site.yml
+```
 
-####step through tasks and be prompted whether to run each step or not
-ansible-playbook playbooks/site.yml --step
-
-####show all tasks that will be executed by the playbook
-ansible-playbook playbooks/site.yml --list-tasks
-
-####skip over steps in a playbook and start at a specific task
-ansible-playbook playbooks/stack_status.yml --start-at-task "verify end-to-end response"
-
-####verify syntax
-ansible-playbook --syntax-check playbooks/site.yml
-
-####do a simulated run of the playbook
-ansible-playbook --check playbooks/site.yml
-
-##Utilities
-
-#### gather facts available
-ansible -m setup all
+Do a simulated run of the playbook:
+```
+$ ansible-playbook --check -i /vagrant/ansible/hosts /vagrant/ansible/playbooks/site.yml
+```

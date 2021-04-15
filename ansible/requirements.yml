@@ -1,0 +1,15 @@
+---
+
+### Fetch role from Ansible Galaxy (https://galaxy.ansible.com/mesaguy/prometheus)
+- src: mesaguy.prometheus
+  version: v0.12.32
+
+### Fetch role from Ansible Galaxy (https://galaxy.ansible.com/geerlingguy/nginx)
+- src: geerlingguy.nginx
+  version: 3.0.0
+
+### Fetch role from Github, Gitlab
+# - src: http://github.com/idealista/java_role.git
+#   scm: git
+#   version: 6.1.1
+#   name: idealista.java

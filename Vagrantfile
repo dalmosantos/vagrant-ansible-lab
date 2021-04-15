@@ -15,23 +15,21 @@ Vagrant.configure(2) do |config|
     h.vm.box = "ubuntu/focal64"
     h.vm.hostname =  "control"
     h.vm.network "private_network", ip: "192.168.135.10"
-    h.vm.provision :shell, inline: 'echo demo > /home/vagrant/.vault_pass.txt'
+    h.vm.network "forwarded_port", guest: 22, host: "2200", id: "ssh"
+    h.vm.provision :shell, inline: "echo 'export ANSIBLE_CONFIG=/vagrant/ansible/ansible.cfg' >> /home/vagrant/.bash_profile"
     h.vm.provision "shell" do |provision|
       provision.path = "provision_ansible.sh"
     end 
     h.vm.provision :shell, :inline => <<'EOF'
-
 	if [ ! -f "/home/vagrant/.ssh/id_rsa" ]; then
   ssh-keygen -t rsa -N "" -f /home/vagrant/.ssh/id_rsa
 fi
 cp /home/vagrant/.ssh/id_rsa.pub /vagrant/control.pub
-
 cat << 'SSHEOF' > /home/vagrant/.ssh/config
 Host *
   StrictHostKeyChecking no
   UserKnownHostsFile=/dev/null
 SSHEOF
-
 chown -R vagrant:vagrant /home/vagrant/.ssh/
 EOF
   end
@@ -40,6 +38,7 @@ EOF
     h.vm.box = "ubuntu/focal64"
     h.vm.hostname = "app01"
     h.vm.network "private_network", ip: "192.168.135.111"
+    h.vm.network "forwarded_port", guest: 22, host: "2201", id: "ssh"
     h.vm.provision :shell, inline: 'cat /vagrant/control.pub >> /home/vagrant/.ssh/authorized_keys'
   end
 
@@ -47,6 +46,8 @@ EOF
     h.vm.box = "centos/7"
     h.vm.hostname = "app02"
     h.vm.network "private_network", ip: "192.168.135.112"
+    h.vm.network "forwarded_port", guest: 22, host: "2202", id: "ssh"
     h.vm.provision :shell, inline: 'cat /vagrant/control.pub >> /home/vagrant/.ssh/authorized_keys'
+    h.vm.provision :shell, inline: 'test -e /usr/bin/python3 || (yum install -y python3)'
   end
 end

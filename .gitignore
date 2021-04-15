@@ -1,4 +1,5 @@
 control.pub
-.vagrant/machines
 .vagrant
-*retry
+ansible/playbooks/roles/
+ansible/roles/mesaguy.prometheus
+ansible/roles/geerlingguy.nginx
