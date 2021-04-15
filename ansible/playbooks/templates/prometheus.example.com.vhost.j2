@@ -9,7 +9,7 @@ upstream prometheus {
 }
 
 server {
-        listen 80 default_server;
+        listen 80;
         server_name prometheus.example.com;
 {% if gzip_enabled %}
         gzip on;
