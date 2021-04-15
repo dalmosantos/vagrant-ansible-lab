@@ -1,2 +1,4 @@
 control.pub
 .vagrant
+ansible/roles/mesaguy.prometheus
+ansible/roles/geerlingguy.nginx
