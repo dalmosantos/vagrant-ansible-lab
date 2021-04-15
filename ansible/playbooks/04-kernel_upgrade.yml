@@ -1,0 +1,50 @@
+---
+
+- hosts: all
+  serial: 1
+  become: true
+  tasks:
+    - name: Check if user is sure to upgrade all packages on {{ inventory_hostname }}
+      pause:
+        prompt: "are you sure that you want to upgrade all of the packages on {{ inventory_hostname }}? (Y/N)"
+        echo: true
+      register: result
+
+    - name: Upgrade all packages block
+      block:
+        # https://www.cyberciti.biz/faq/ansible-reboot-debian-ubuntu-linux-for-kernel-update-waitforit/
+        - name: Upgrade all packages on Debian based hosts
+          apt:
+            update_cache: true
+            upgrade: full
+          when: ansible_os_family | lower == "debian"
+
+        - name: Upgrade all packages on RedHat based hosts 
+          yum:
+            name: '*'
+            state: latest
+          when: ansible_os_family | lower == "redhat"
+
+        # https://medium.com/supersonic-generation/ansible-playbook-example-script-module-using-args-creates-removes-70d5b310b6a2
+        - name: Reboot box if kernel/libs updated and requested by the system
+          shell: sleep 10 && /sbin/shutdown -r now 'Rebooting box to update system libs/kernel as needed' 
+          args:
+            # The removes is some sort of condition. If A filename called /var/run/reboot-required does not exist, the shutdown command will not be run.
+            removes: /var/run/reboot-required
+          async: 300
+          poll: 0
+          ignore_errors: true
+
+        - name: Wait for system to become reachable again
+          wait_for_connection:
+            delay: 60
+            timeout: 300
+
+        - name: Verify new update (optional)
+          command: uname -mrs
+          register: uname_result
+        
+        - name: Display new kernel version
+          debug:
+            var: uname_result.stdout_lines
+      when: result.user_input | lower == "y"
