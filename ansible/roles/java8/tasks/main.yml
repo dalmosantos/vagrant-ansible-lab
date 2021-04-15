@@ -1,0 +1,19 @@
+---
+# tasks file for java8
+#
+
+- name: Include OS specific vars
+  include_vars: "{{ ansible_os_family  | lower }}.yml"
+
+- name: install java for CentOS
+  yum:
+    name: "{{ required_package }}"
+    state: latest
+  when: ansible_os_family | lower == "redhat"
+
+- name: install java for Debian
+  apt:
+    name: "{{ required_package }}"
+    update_cache: yes
+    state: latest
+  when: ansible_os_family | lower == "debian"
