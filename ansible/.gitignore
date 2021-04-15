@@ -1,0 +1,6 @@
+control.pub
+.vagrant
+ansible/playbooks/roles/
+ansible/roles/mesaguy.prometheus
+ansible/roles/geerlingguy.nginx
+
