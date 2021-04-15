@@ -1,0 +1,8 @@
+# FACTS
+---
+- name: Install java
+  hosts: all
+  remote_user: vagrant
+  become: true
+  roles: 
+    - java8

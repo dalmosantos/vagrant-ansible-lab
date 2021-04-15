@@ -1,0 +1,20 @@
+---
+
+- name: Install jq
+  hosts: all
+  become: true # false 
+  gather_facts: false 
+  tasks:
+  - name: Download jq binary
+    get_url:
+      url: https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 
+      dest: /opt/jq
+      mode: '0755'
+
+  - name: Create a symbolic link for jq
+    file:
+      src: /opt/jq
+      dest: /usr/local/bin/jq
+      owner: root
+      group: root
+      state: link

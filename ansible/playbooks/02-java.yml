@@ -1,0 +1,21 @@
+# FACTS
+---
+- name: Install java
+  hosts: all
+  remote_user: vagrant
+  become: true
+
+  tasks:
+  - name: install java for CentOS
+    yum:
+      name: java-1.8.0-openjdk.x86_64
+      state: latest
+    when: ansible_os_family | lower == "redhat"
+
+  - name: install java for Debian
+    apt:
+      name: openjdk-8-jdk
+      update_cache: yes
+      state: latest
+    when: ansible_os_family | lower == "debian"
+
