@@ -1,9 +1,5 @@
 # Vagrant Ansible Lab
 
-This lab is based on the Udemy course https://www.udemy.com/mastering-ansible/
-The lab has been built with Virtualbox VM host, and may not work with other VM providers without modification.
-This lab does not use Ansible via Vagrant, and thus Ansible is not a requirement on your Vagrant host. Ansible will be installed on an ansible host VM, and all playbooks to configure the lab machines will be run from there interactively, once Vagrant has built the base VMs. The lab configures a simple nginx load balancer, 2 web app servers and a mysql database.
-
 The lab will implement the following configuration:
 
 -
@@ -37,7 +33,11 @@ The lab will implement the following configuration:
   - `ansible.cfg` (in the current directory)
   - `~/.ansible.cfg` (in the home directory)
   - `/etc/ansible/ansible.cfg`
-* [./group_vars/all/vars](ansible/group_vars/all/main.yml): Global variables file for all of the host groups
+* [./group_vars/all/main.yml](ansible/group_vars/all/main.yml): Global variables file for all of the host groups
+* [./group_vars/nginx/main.yml](ansible/group_vars/nginx/main.yml): Global variables file for `nginx` host group
+* [./group_vars/prometheus/main.yml](ansible/group_vars/prometheus/main.yml): Global variables file for `prometheus` host group
+* [./playbooks](ansible/playbooks): Playbook folder for Ansible lab
+* [./roles](ansible/roles): Role folder for Ansible lab
 
 ## Examples
 
