@@ -1,0 +1,7 @@
+---
+
+- name: Install Java from java8 role
+  hosts: all
+  become: true
+  roles:
+    - java8

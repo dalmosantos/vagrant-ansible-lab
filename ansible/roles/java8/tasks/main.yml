@@ -1,0 +1,17 @@
+---
+
+- name: Include OS specific vars
+  include_vars: "{{ ansible_os_family | lower  }}.yml"
+
+- name: Install Java for CentOS
+  yum:
+    name: "{{ required_package }}" 
+    state: latest
+  when: ansible_os_family | lower == "redhat"
+
+- name: Install Java for Debian
+  apt:
+    name: "{{ required_package }}"
+    state: latest
+    update_cache: yes
+  when: ansible_os_family | lower == "debian"
