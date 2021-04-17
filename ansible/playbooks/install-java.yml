@@ -1,0 +1,20 @@
+---
+
+- name: Install Java
+  hosts: all
+  become: true
+
+
+  tasks:
+  - name: Install Java for CentOS
+    yum:
+      name: java-1.8.0-openjdk.x86_64
+      state: latest
+    when: ansible_os_family | lower == "redhat"
+
+  - name: Install Java for Debian
+    apt:
+      name: openjdk-8-jdk
+      state: latest
+      update_cache: yes
+    when: ansible_os_family | lower == "debian"
