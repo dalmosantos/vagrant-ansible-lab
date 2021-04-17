@@ -1,0 +1,29 @@
+---
+
+- name: Install jq package
+  hosts: all
+  become: true
+  gather_facts: true
+
+
+  tasks:
+  - name: install required selinux package for CentOS
+    yum:
+      name: libselinux-python.x86_64
+      state: latest
+    when: ansible_os_family | lower == "redhat"
+
+
+  - name: Download jq binary
+    get_url:
+      url: https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64 
+      dest: /opt/jq
+      mode: '0755'
+
+  - name: symlink for jq
+    file:
+      src: /opt/jq
+      dest: /usr/local/bin/jq
+      owner: root
+      group: root
+      state: link

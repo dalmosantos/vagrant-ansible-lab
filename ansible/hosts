@@ -1,11 +1,12 @@
-[nginx]
+[ubuntu]
 app01 ansible_host=192.168.135.111
 
-[prometheus]
+[centos]
 app02 ansible_host=192.168.135.112
+
+[centos:vars]
+ansible_python_interpreter=/usr/bin/python
 
 # [control]
 # control ansible_connection=local
 
-[prometheus:vars]
-ansible_python_interpreter=/usr/bin/python
