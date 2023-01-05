@@ -5,9 +5,10 @@ The lab will implement the following configuration:
 -
 | Machine  Name | Role          | Network Configuration                  | OS                         |
 |---------------|---------------|----------------------------------------|----------------------------|
-| control       | Ansible  host | private_network, ip: 192.168.135.10    | Ubuntu Focal64 (20 LTS)   |
-| app01         | web server 1  | private_network, ip: 192.168.135.111   | Ubuntu Focal64 (20 LTS)   |
-| app02         | web server 2  | private_network, ip: 192.168.135.112   | Centos 7   |
+| control       | Ansible  host | private_network, ip: 192.168.135.10    | Ubuntu 22.04 LTS           |
+| app01         | web server 1  | private_network, ip: 192.168.135.111   | Ubuntu 22.04 LTS           |
+| app02         | web server 2  | private_network, ip: 192.168.135.112   | Rocky Linux 9              |
+| app03         | web server 3  | private_network, ip: 192.168.135.113   | Windows Server 2016        |
 
 
 ## Prerequisites
@@ -15,8 +16,9 @@ The lab will implement the following configuration:
 * Install the Virtualbox 6.1.18 from https://www.virtualbox.org/wiki/Downloads if it is not installed already.
 * Download the Vagrant boxes for your preferred hypervisor:
   ```
-  $ vagrant box add centos/7
-  $ vagrant box add ubuntu/focal64
+  $ vagrant box add generic/ubuntu2204
+  $ vagrant box add rockylinux/9
+  $ vagrant box add peru/windows-server-2016-standard-x64-eval
   ```
 
 ## Quick Start
